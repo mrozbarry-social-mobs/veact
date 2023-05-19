@@ -4,16 +4,15 @@ Build a react clone in an effort to understand what react does under the hood
 
 ## Contributors
 
-- Alex
+- Alex :star: :star:
+- Ahmed :star: :star:
+- John :star: :star:
+- Eric :star:
+- Hunter :star:
 - Justin S
-- Caleb
 - Jeff C
-- Ahmed
-- Eric
 - Easton
 - Rohullah
 - Jeff P
-- John
 - Caleb
-- Hunter
 - Justin B

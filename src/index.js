@@ -1,9 +1,25 @@
-
-export function createApp(component,domNode) {
-    const element = window.document.createElement('div');
-    element.id = 'app';
-    window.document.body.appendChild(element);
+export function createApp(component, domNode) {
+    const magic = ({ tag, props, children }) => {
+        const root = document.createElement(tag);
+        children.forEach((child) => {
+            if (typeof child === 'string') {
+                const textNode = document.createTextNode(child);
+                root.appendChild(textNode);
+            } else {
+                root.appendChild(magic(child));
+            }
+        });
+        return root;
+    }
     
-    domNode.innerText = 'hello world';
+    domNode.appendChild(magic(component));
+
     return;
 }
+
+// vdom:
+// { tag: 'div', props: { className: 'block border' }, children: [] }
+// createApp()
+// - has a root component
+// - can track some form of state?
+// - re-renders 
