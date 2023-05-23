@@ -1,4 +1,5 @@
 import { createApp } from '../src/index.js';
+import * as jest from 'jest-mock';
 
 describe('src/index', () => {
     let element = null;
@@ -26,17 +27,24 @@ describe('src/index', () => {
             expect(window.document.querySelector('#app').innerHTML).toEqual('<div><h1>Second layer header</h1></div>');
         });
 
-        it('can add html properites', () => {
-            const ariaLabel = 'any known value';
-            createApp({ tag: 'div', props: { ariaLabel }, children: ['hello world']}, element);
+        it('can add html events', () => {
+            const onclick = jest.fn();
 
-            expect(window.document.querySelector('#app').innerHTML).toEqual('<div>hello world</div>');
-            expect(window.document.querySelector('#app div').ariaLabel).toEqual('any known value');
+            createApp({ tag: 'button', props: { onclick }, children: ['something different']}, element);
+            document.querySelector('button').click();
+
+            expect(window.document.querySelector('#app').innerHTML).toEqual('<button>something different</button>');
+            expect(onclick).toHaveBeenCalledTimes(1);
         });
 
-//        it.skip('can add html events');
-//
-//        it.skip('can add html attributes');
+        it('can add html attributes', () => {
+            const dataType = 'any known value';
+            const tacos = 'tacoooooos';
+            createApp({ tag: 'div', props: { "data-type": dataType, tacos }, children: ['hello world']}, element);
+
+            expect(window.document.querySelector('#app').innerHTML).toEqual(`<div data-type="${dataType}" tacos="${tacos}">hello world</div>`);
+
+        });
 
     });
 });

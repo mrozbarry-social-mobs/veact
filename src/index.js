@@ -3,7 +3,11 @@ export function createApp(component, domNode) {
         const root = document.createElement(tag);
 
         Object.keys(props).forEach(key => {
-            root[key] = props[key]
+            if (key in root) {
+                root[key] = props[key]
+            } else {
+                root.setAttribute(key, props[key]);
+            }
         });
         
         children.forEach((child) => {
