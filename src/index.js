@@ -1,6 +1,11 @@
 export function createApp(component, domNode) {
     const magic = ({ tag, props, children }) => {
         const root = document.createElement(tag);
+
+        Object.keys(props).forEach(key => {
+            root[key] = props[key]
+        });
+        
         children.forEach((child) => {
             if (typeof child === 'string') {
                 const textNode = document.createTextNode(child);
