@@ -1,4 +1,4 @@
-import { createApp } from '../src/index.js';
+import {createApp, createElement} from '../src/index.js';
 import * as jest from 'jest-mock';
 
 describe('src/index', () => {
@@ -13,7 +13,7 @@ describe('src/index', () => {
         });
 
         it('renders a vdom object', () => {
-            createApp({ tag: 'div', props: {}, children: ['hello world']}, element);
+            createApp({ tag: 'div', props: {}, children: ['hello world'] }, element);
             
             expect(window.document.querySelector('#app').innerHTML).toEqual('<div>hello world</div>');
         });
@@ -47,28 +47,25 @@ describe('src/index', () => {
         });
 
     });
+
+    describe('createElement', () => {
+        it('creates a div vdom', () => {
+            const element = createElement('div');
+
+            expect(element).toEqual({ tag: 'div', props: {}, children: [] });
+        })
+
+        it('creates a div vdom with props', () => {
+            const element = createElement('div', { foo: 'bar' });
+
+            expect(element).toEqual({ tag: 'div', props: { foo: 'bar' }, children: [] });
+        })
+
+
+        it('nests vdom elements', () => {
+            const element = createElement('div', {}, createElement('span', {}, 'cool'));
+
+            expect(element).toEqual({ tag: 'div', props: {}, children: [{ tag: 'span', props: {}, children: ['cool'] }] });
+        })
+    });
 });
-
-/*
-
-function Tacos(props) {
-  return (
-    <div>
-      <h1>Tacos!</h1>
-    </div>
-  );
-}
-
-function Tacos(props) {
-  return React.createElement('div', {}, [
-      React.createElement('h1', {}, 'Tacos!'),
-    ]);
-}
-
-{ tag: 'div', props: {}, children: [
-  { tag: 'h1', props: {}, children: 'Tacos!' },
-] }
-
-
-
-*/

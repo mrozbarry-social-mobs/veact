@@ -26,6 +26,10 @@ export function createApp(component, domNode) {
     return;
 }
 
+export function createElement(tag, props = {}, ...children){
+    return { tag, props, children };
+}
+
 // vdom:
 // { tag: 'div', props: { className: 'block border' }, children: [] }
 // createApp()
