@@ -1,5 +1,5 @@
 export function createApp(component, domNode) {
-    const magic = ({ tag, props, children }) => {
+    const vdomToRealDom = ({ tag, props, children }, oldNode) => {
         const root = document.createElement(tag);
 
         Object.keys(props).forEach(key => {
@@ -12,27 +12,44 @@ export function createApp(component, domNode) {
         
         children.forEach((child) => {
             if (typeof child === 'string') {
+
                 const textNode = document.createTextNode(child);
                 root.appendChild(textNode);
             } else {
-                root.appendChild(magic(child));
+                root.appendChild(vdomToRealDom(child));
             }
         });
         return root;
     }
     
-    domNode.appendChild(magic(component));
+    function tacos() {
+        domNode.innerHTML = '';
+        domNode.appendChild(vdomToRealDom(component));
+    }
+    tacos();
 
-    return;
+    return {
+        render: () => {
+            tacos();
+        },
+    }
 }
 
-export function createElement(tag, props = {}, ...children){
+export function createElement(tag, props = {}, ...children) {
     return { tag, props, children };
 }
 
-// vdom:
-// { tag: 'div', props: { className: 'block border' }, children: [] }
-// createApp()
-// - has a root component
-// - can track some form of state?
-// - re-renders 
+export function doesDomElementMatchVdom(domElement, { tag, props }) {
+    console.log('skfbkfjg', domElement.nodeName, tag)
+    if(domElement.nodeName.toLowerCase() === tag) {
+        return true;
+    }
+
+    domElement.props.forEach(prop => {
+        if (!props.contains(prop)){
+            return false;
+        }
+    })
+
+    return true;
+}

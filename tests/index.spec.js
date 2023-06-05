@@ -1,4 +1,4 @@
-import {createApp, createElement} from '../src/index.js';
+import {createApp, createElement, doesDomElementMatchVdom} from '../src/index.js';
 import * as jest from 'jest-mock';
 
 describe('src/index', () => {
@@ -15,6 +15,13 @@ describe('src/index', () => {
         it('renders a vdom object', () => {
             createApp({ tag: 'div', props: {}, children: ['hello world'] }, element);
             
+            expect(window.document.querySelector('#app').innerHTML).toEqual('<div>hello world</div>');
+        });
+
+        it('renders a taco vdom object', () => {
+            createApp({ tag: 'div', props: {}, children: ['taco hello world'] }, element);
+            createApp({ tag: 'div', props: {}, children: ['hello world'] }, element);
+
             expect(window.document.querySelector('#app').innerHTML).toEqual('<div>hello world</div>');
         });
 
@@ -46,7 +53,58 @@ describe('src/index', () => {
 
         });
 
+
+        // Only do a setAttribute when we know the value is serializable as a string
+
+//        it('returns the same dome as the vdom', () => {
+//            element.innerHTML = '<div>foo</div>';
+//            const app = createApp({ tag: 'div', props: {}, children: ['hello world'] }, element);
+//
+//            expect(window.document.querySelector('#app').innerHTML).toEqual('<div>hello world</div>');
+//            const oldDom = element.childNodes[0];
+//
+//            app.render();
+//
+//            expect(element.childNodes[0]).toStrictEqual(oldDom);
+//        })
+
+
     });
+
+    describe('doesDomElementMatchVdom', () => {
+        it('returns false when tags are not the same', () => {
+            element.innerHTML = '<div>foo</div>';
+            const oldDom = element.children[0];
+
+            const doTheyMatch = doesDomElementMatchVdom(oldDom, {tag: 'select', props: {}});
+            expect(doTheyMatch).toBe(false);
+        })
+
+        it('returns true when tags are the same', () => {
+             element.innerHTML = '<div>foo</div>';
+             const oldDom = element.children[0];
+
+             const doTheyMatch = doesDomElementMatchVdom(oldDom, {tag: 'div', props: {}});
+             expect(doTheyMatch).toBe(true);
+         })
+
+        it.only('returns false when the tags are the same but the props are different', () => {
+            element.innerHTML = '<div id="taco">foo</div>';
+            const oldDom = element.children[0];
+
+            const doTheyMatch = doesDomElementMatchVdom(oldDom, {tag: 'div', props: oldDom.props});
+            expect(doTheyMatch).toBe(false);
+        })
+
+
+        it('returns true when the props are the same', () => {
+            element.innerHTML = '<div id="taco">foo</div>';
+            const oldDom = element.children[0];
+
+            const doTheyMatch = doesDomElementMatchVdom(oldDom, {tag: 'div', props: oldDom.props});
+            expect(doTheyMatch).toBe(true);
+        })
+    })
 
     describe('createElement', () => {
         it('creates a div vdom', () => {
